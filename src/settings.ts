@@ -14,7 +14,7 @@ import {
   QRLoginExchangeResponse,
 } from './api';
 import MatterPlugin from './main';
-import { HIGHLIGHT_TEMPLATE, METADATA_TEMPLATE } from './rendering';
+import { HIGHLIGHT_TEMPLATE, LAYOUT_TEMPLATE, METADATA_TEMPLATE } from './rendering';
 import { sleep } from './utils';
 
 export interface ContentMap {
@@ -42,6 +42,7 @@ export interface MatterSettings {
   recreateIfMissing: boolean;
   metadataTemplate: string | null;
   highlightTemplate: string | null;
+  articleTemplate: string | null;
 }
 
 export const DEFAULT_SETTINGS: MatterSettings = {
@@ -59,6 +60,7 @@ export const DEFAULT_SETTINGS: MatterSettings = {
   recreateIfMissing: true,
   metadataTemplate: null,
   highlightTemplate: null,
+  articleTemplate: null,
 }
 
 export class MatterSettingsTab extends PluginSettingTab {
@@ -320,6 +322,20 @@ export class MatterSettingsTab extends PluginSettingTab {
         .setValue(this.plugin.settings.highlightTemplate || HIGHLIGHT_TEMPLATE.trim())
         .onChange(async (val) => {
           this.plugin.settings.highlightTemplate = val;
+          await this.plugin.saveSettings();
+        });
+      })
+
+    new Setting(containerEl)
+      .setName('Article Template')
+      .setDesc('Customize the template used to display the entire article. Supported tags: {{metadata}}, {{highlights}}, {{content}}. To see the full templating API, visit https://mozilla.github.io/nunjucks/templating.html.')
+      .addTextArea(textarea => {
+        textarea.inputEl.style.minWidth = '480px';
+        textarea.inputEl.style.minHeight = '200px';
+        textarea
+        .setValue(this.plugin.settings.articleTemplate || LAYOUT_TEMPLATE.trim())
+        .onChange(async (val) => {
+          this.plugin.settings.articleTemplate = val;
           await this.plugin.saveSettings();
         });
       })

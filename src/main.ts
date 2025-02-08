@@ -248,7 +248,6 @@ export default class MatterPlugin extends Plugin {
       return
     }
 
-
     let highlights;
     try {
       const annotations = feedEntry.content.my_annotations.sort((a, b) => a.word_start - b.word_start);
@@ -259,11 +258,14 @@ export default class MatterPlugin extends Plugin {
       return
     }
 
+    const content = feedEntry.content.article.markdown;
     try {
-      return renderer.renderString(LAYOUT_TEMPLATE.trim(), {
+      const template = this.settings.articleTemplate || LAYOUT_TEMPLATE.trim();
+      return renderer.renderString(template, {
         title: feedEntry.content.title,
         metadata: metadata,
         highlights: highlights,
+        content: content,
       })
     } catch (error) {
       new Notice("There was a problem with your Matter template. Please update it in settings.");

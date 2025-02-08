@@ -48,6 +48,11 @@ export interface Content {
   tags: Tag[];
   title: string;
   url: string;
+  article: Article;
+}
+
+export interface Article {
+  markdown: string;
 }
 
 export interface FeedEntry {
